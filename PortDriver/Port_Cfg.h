@@ -8,16 +8,8 @@
  *
  * Author: Mahmoud MORSY
  ******************************************************************************/
-
 #ifndef PORT_CFG_H
 #define PORT_CFG_H
-
-
-/******************************************************************************
- *                             Included Libraries                             *
- ******************************************************************************/
-/* Including PORT Module Enumerations */
-#include "Port_Enums.h"
 
 
 /******************************************************************************
@@ -36,7 +28,6 @@
 #define PORT_CFG_AR_RELEASE_MAJOR_VERSION                                   (4U)
 #define PORT_CFG_AR_RELEASE_MINOR_VERSION                                   (0U)
 #define PORT_CFG_AR_RELEASE_PATCH_VERSION                                   (3U)
-
 
 /******************************************************************************
  *               PRE-Compile Configuration Options & Parameters               *
@@ -65,21 +56,7 @@
 /* Pre-compile parameter for total number of pins in the controller */
 #define PORT_NUMBER_OF_PINS                                                (32U)
 
-/* Pre-compile option for default pin level value */
-#define PORT_DEFAULT_PIN_LEVEL_VALUE       (Port_PinLevelType)PORT_PIN_LEVEL_LOW
 
-/* Pre-compile option for default pin direction */
-#define PORT_DEFAULT_PIN_DIRECTION           (Port_PinDirectionType)PORT_PIN_OUT
-
-/* Pre-compile option for default pin mode */
-#define PORT_DEFAULT_PIN_MODE                (Port_PinModeType)PORT_PIN_MODE_DIO
-
-/* Pre-compile option for default direction changeable option */
-#define PORT_DEFAULT_PIN_DIRECTION_CHANGEABLE_VALUE\
-                                               PORT_PIN_DIRECTION_NOT_CHANGEABLE
-
-/* Pre-compile option for default mode changeable option */
-#define PORT_DEFAULT_PIN_MODE_CHANGEABLE_VALUE                  (boolean)STD_OFF
 
 /******************************************************************************
  *                   Generated Enumeration for Pin Names & IDs                *

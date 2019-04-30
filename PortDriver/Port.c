@@ -219,15 +219,20 @@ void Port_Init(const Port_ConfigType * ConfigPtr)
 					break;
 				/* Pin configured as DIO Pin Controlled by GPT */
 				case PORT_PIN_MODE_DIO_GPT:
+					/* Mode is OK, but Nothing to do */
 					break;
 				/* Pin configured as DIO Pin Controlled by WDG */
 				case PORT_PIN_MODE_DIO_WDG:
+					/* Mode is OK, but Nothing to do */
 					break;
 				/* Pin configured as PWM Pin */
 				case PORT_PIN_MODE_PWM:
+					Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
+							PORT_PIN_OUT, PORT_PIN_LEVEL_LOW, STD_ON);
 					break;
 				/* Pin configured as SPI Pin */
 				case PORT_PIN_MODE_SPI:
+					/* Mode is OK, but Nothing to do */
 					break;
 				/* Modes that are not supported by the controller */
 				case PORT_PIN_MODE_CAN:
@@ -305,17 +310,14 @@ void Port_SetPinDirection(
 				case PORT_PIN_IN:
 					Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
 							PORT_PIN_IN, PORT_PIN_LEVEL_LOW, STD_OFF);
-					Local_PinPtr->PinDirection = PORT_PIN_IN;
 					break;
 				case PORT_PIN_IN_PULLUP:
 					Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
 							PORT_PIN_IN_PULLUP, PORT_PIN_LEVEL_LOW, STD_OFF);
-					Local_PinPtr->PinDirection = PORT_PIN_IN_PULLUP;
 					break;
 				case PORT_PIN_OUT:
 					Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
 							PORT_PIN_OUT, PORT_PIN_LEVEL_LOW, STD_OFF);
-					Local_PinPtr->PinDirection = PORT_PIN_OUT;
 					break;
 				default:
 					#if (PORT_DEV_ERROR_DETECT == STD_ON)
@@ -371,27 +373,34 @@ void Port_RefreshPortDirection(
 			Local_PinNumber = (uint8)(Local_PinsCounter % PORT_NUMBER_OF_PORT_PINS);
 			Local_PinPtr = (Port_Pin*)&((Port_Configurations->Ports[Local_PortNumber]).Pins[Local_PinNumber]);
 
-			switch(Local_PinPtr->PinDirection)
+			if (PORT_PIN_DIRECTION_NOT_CHANGEABLE == Local_PinPtr->PinDirectionChangeable)
 			{
-				case PORT_PIN_IN:
-					Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
-							PORT_PIN_IN, PORT_PIN_LEVEL_LOW, STD_OFF);
-					break;
-				case PORT_PIN_IN_PULLUP:
-					Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
-							PORT_PIN_IN_PULLUP, PORT_PIN_LEVEL_LOW, STD_OFF);
-					break;
-				case PORT_PIN_OUT:
-					Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
-							PORT_PIN_OUT, PORT_PIN_LEVEL_LOW, STD_OFF);
-					break;
-				default:
-					#if (PORT_DEV_ERROR_DETECT == STD_ON)
-					/* Report Development Error for invalid direction parameter */
-					Det_ReportError(PORT_MODULE_ID, PORT_INSTANCE_ID,
-							PORT_REFRESH_PORT_DIRECTION_SID ,PORT_E_PARAM_BAD);
-					#endif
-					break;
+				switch(Local_PinPtr->PinDirection)
+				{
+					case PORT_PIN_IN:
+						Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
+								PORT_PIN_IN, PORT_PIN_LEVEL_LOW, STD_OFF);
+						break;
+					case PORT_PIN_IN_PULLUP:
+						Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
+								PORT_PIN_IN_PULLUP, PORT_PIN_LEVEL_LOW, STD_OFF);
+						break;
+					case PORT_PIN_OUT:
+						Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
+								PORT_PIN_OUT, PORT_PIN_LEVEL_LOW, STD_OFF);
+						break;
+					default:
+						#if (PORT_DEV_ERROR_DETECT == STD_ON)
+						/* Report Development Error for invalid direction parameter */
+						Det_ReportError(PORT_MODULE_ID, PORT_INSTANCE_ID,
+								PORT_REFRESH_PORT_DIRECTION_SID ,PORT_E_PARAM_BAD);
+						#endif
+						break;
+				}
+			}
+			else
+			{
+				/* If Pin Direction is changeable during runtime, Do Nothing */
 			}
 		}
 	}
@@ -498,30 +507,24 @@ void Port_SetPinMode(
 			switch (Mode)
 			{
 			case PORT_PIN_MODE_ADC:
-				Local_PinPtr->PinMode[0] = PORT_PIN_MODE_ADC;
-				//TODO check with M.T bec. what if Direction is unchangeable?
-				Local_PinPtr->PinDirection = PORT_PIN_IN;
 				Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
 						PORT_PIN_IN, PORT_PIN_LEVEL_LOW, STD_OFF);
 				break;
 			case PORT_PIN_MODE_DIO:
-				Local_PinPtr->PinMode[0] = PORT_PIN_MODE_ADC;
+				/* Mode is OK, but Nothing To Do */
 				break;
 			case PORT_PIN_MODE_DIO_GPT:
-				Local_PinPtr->PinMode[0] = PORT_PIN_MODE_DIO_GPT;
+				/* Mode is OK, but Nothing To Do */
 				break;
 			case PORT_PIN_MODE_DIO_WDG:
-				Local_PinPtr->PinMode[0] = PORT_PIN_MODE_DIO_WDG;
+				/* Mode is OK, but Nothing To Do */
 				break;
 			case PORT_PIN_MODE_PWM:
-				Local_PinPtr->PinMode[0] = PORT_PIN_MODE_PWM;
-				//TODO check with M.T bec. what if Direction is unchangeable?
-				Local_PinPtr->PinDirection = PORT_PIN_OUT;
-				Local_PinPtr->PinLevelValue = PORT_PIN_LEVEL_LOW;
 				Port_ConfigurePinModeDio(Local_PortNumber, Local_PinNumber,
 						PORT_PIN_OUT, PORT_PIN_LEVEL_LOW, STD_ON);
 				break;
 			case PORT_PIN_MODE_SPI:
+				/* Mode is OK, but Nothing To Do */
 				break;
 			case PORT_PIN_MODE_CAN:
 			case PORT_PIN_MODE_FLEXRAY:

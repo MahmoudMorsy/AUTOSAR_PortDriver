@@ -5,7 +5,7 @@ int main(void)
 	/* Initialize and start the Os Scheduler*/
 	Os_init();
 	/* Initialize Application */
-	//Init_Task();
+	Init_Task();
 
 	while(1)
     {

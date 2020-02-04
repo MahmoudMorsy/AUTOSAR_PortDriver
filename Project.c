@@ -10,6 +10,6 @@ int main(void)
 	while(1)
     {
 		/* Run the Scheduler engine to start switching between different tasks */
-		//Os_engine();
+		Os_engine();
 	}
 }
